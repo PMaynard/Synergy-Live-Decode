@@ -1,0 +1,7 @@
+Synergy Live Decode
+
+This displays Live decoding of any synergy traffic that is found on the network.
+
+Requires:
+	Python
+	Python Libpcap (http://pylibpcap.sourceforge.net)
