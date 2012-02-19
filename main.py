@@ -12,6 +12,9 @@ import os
 if os.getuid() != 0:
 	sys.exit('Requires Root') 
 
+# Open a data file
+#f = open('./tmp/data', 'rw')
+
 # We only want TCP
 protocols={socket.IPPROTO_TCP:'tcp'}
 
@@ -50,20 +53,22 @@ def print_packet(pktlen, data, timestamp):
 
   if data[12:14]=='\x08\x00':
     decoded=decode_ip_packet(data[14:])
-    print '\n%s.%f %s > %s' % (time.strftime('%H:%M',
-                                           time.localtime(timestamp)),
-                             timestamp % 60,
-                             decoded['source_address'],
-                             decoded['destination_address'])
-    for key in ['version', 'header_len', 'tos', 'total_len', 'id',
-                'flags', 'fragment_offset', 'ttl']:
-      print '  %s: %d' % (key, decoded[key])
-    print '  protocol: %s' % protocols[decoded['protocol']]
-    print '  header checksum: %d' % decoded['checksum']
-    print '  data:'
-    #dumphex(decoded['data'])
- 
+    if decoded['destination_address'] == '10.0.0.12' and decoded['source_address'] == '10.0.0.15':
+	    print '\n%s.%f %s > %s' % (time.strftime('%H:%M',
+						   time.localtime(timestamp)),
+				     timestamp % 60,
+				     decoded['source_address'],
+				     decoded['destination_address'])
+	    #for key in ['version', 'header_len', 'tos', 'total_len', 'id',
+	#		'flags', 'fragment_offset', 'ttl']:
+	#      print '  %s: %d' % (key, decoded[key])
+	    #print '  protocol: %s' % protocols[decoded['protocol']]
+	    #print '  header checksum: %d' % decoded['checksum']
+	    #print '  data:'
 
+	    #data = str(dumphex(decoded['data']))
+	    dumphex(decoded['data'])
+	    #f.write(data)
 if __name__=='__main__':
 
   if len(sys.argv) < 3:
@@ -97,6 +102,7 @@ if __name__=='__main__':
     # p.next() returns a (pktlen, data, timestamp) tuple 
     #  apply(print_packet,p.next())
   except KeyboardInterrupt:
+    #f.close()
     print '%s' % sys.exc_type
     print 'shutting down'
     print '%d packets received, %d packets dropped, %d packets dropped by interface' % p.stats()
