@@ -8,11 +8,12 @@ import socket
 import struct
 import os 
 
+# Exit if not running as root.
 if os.getuid() != 0:
 	sys.exit('Requires Root') 
 
-protocols={socket.IPPROTO_TCP:'tcp',
-           socket.IPPROTO_UDP:'udp'}
+# We only want TCP
+protocols={socket.IPPROTO_TCP:'tcp'}
 
 def decode_ip_packet(s):
   d={}
@@ -22,7 +23,7 @@ def decode_ip_packet(s):
   d['total_len']=socket.ntohs(struct.unpack('H',s[2:4])[0])
   d['id']=socket.ntohs(struct.unpack('H',s[4:6])[0])
   d['flags']=(ord(s[6]) & 0xe0) >> 5
-  #d['fragment_offset']=socket.ntohs(struct.unpack('H',s[6:8])[0] & 0x1f)
+  d['fragment_offset']=socket.ntohs(struct.unpack('H',s[6:8])[0] & 0x1f)
   d['ttl']=ord(s[8])
   d['protocol']=ord(s[9])
   d['checksum']=socket.ntohs(struct.unpack('H',s[10:12])[0])
@@ -60,7 +61,7 @@ def print_packet(pktlen, data, timestamp):
     print '  protocol: %s' % protocols[decoded['protocol']]
     print '  header checksum: %d' % decoded['checksum']
     print '  data:'
-    dumphex(decoded['data'])
+    #dumphex(decoded['data'])
  
 
 if __name__=='__main__':
