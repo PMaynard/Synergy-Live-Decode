@@ -5,7 +5,7 @@ Synergy Live Decode
 This displays Live decoding of any synergy traffic that is found on the network.
 
 ### Requires:
-- Python
+- Python (any)
 - Python Libpcap (http://pylibpcap.sourceforge.net)
 
 ## Wireshark filter
